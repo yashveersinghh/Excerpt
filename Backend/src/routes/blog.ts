@@ -19,12 +19,16 @@ blogRouter.use('/*', async (c, next) => {
   if (!token) {
     return c.json({ error: 'Unauthorized' }, 401)
   }
-
-  const user = await verify(token, c.env.JWT_SECRET, 'HS256');
-  if(user.id){
-    c.set('userId', String(user.id))
-    return next()
-  } else {
+  try{
+    const user = await verify(token, c.env.JWT_SECRET, 'HS256');
+    if(user.id){
+      c.set('userId', String(user.id))
+      return next()
+    } else {
+      return c.json({ error: 'Unauthorized' }, 401)
+    }
+  } catch (error) {
+    console.error('JWT verification failed:', error)
     return c.json({ error: 'Unauthorized' }, 401)
   }
 })
@@ -36,7 +40,7 @@ blogRouter.post('/', async(c) => {
     const body = await c.req.json();
     const userId = c.get('userId');
 
-    await prisma.post.create({
+  const blog = await prisma.post.create({
         data: {
             title: body.title,
             content: body.content,
@@ -44,7 +48,7 @@ blogRouter.post('/', async(c) => {
         }
     })
     return c.json({
-      id: userId
+    id: blog.id
     })
 })
 blogRouter.put('/', async(c) => {
@@ -52,40 +56,31 @@ blogRouter.put('/', async(c) => {
         accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const body = await c.req.json();
-    const userId = c.get('userId');
 
-    await prisma.post.update({
-        where:{
-            id: body.id
-        },
-        data: {
-            title: body.title,
-            content: body.content,
-        }
-    })
-    return c.json({
-      id: userId
-    })
-})
-blogRouter.get('/:id', async(c) => {
-  const prisma = new PrismaClient({
-        accelerateUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
-    const body = await c.req.json();
-    try{
-      const blog = await prisma.post.findFirst({
+    if (!body?.id || !body?.title || !body?.content) {
+      return c.json({ error: 'id, title and content are required' }, 400)
+    }
+
+    try {
+      await prisma.post.update({
           where:{
               id: body.id
+          },
+          data: {
+              title: body.title,
+              content: body.content,
           }
       })
       return c.json({
-        blog
+        id: body.id
       })
-    } catch(e){
-      c.status(404);
-      return c.json({
-        error: 'Blog not found'
-      })
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
+        return c.json({ error: 'Blog not found' }, 404)
+      }
+
+      console.error('Update blog failed:', error)
+      return c.json({ error: 'Internal Server Error' }, 500)
     }
 })
 //add pagination
@@ -97,4 +92,26 @@ blogRouter.get('/bulk', async(c) => {
     return c.json({
       blogs
     })
+})
+
+blogRouter.get('/:id', async(c) => {
+  const prisma = new PrismaClient({
+        accelerateUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+    const id = await c.req.param('id');
+    try{
+      const blog = await prisma.post.findFirst({
+          where:{
+              id: id
+          }
+      })
+      return c.json({
+        blog
+      })
+    } catch(e){
+      c.status(404);
+      return c.json({
+        error: 'Blog not found'
+      })
+    }
 })
