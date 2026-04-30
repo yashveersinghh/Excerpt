@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { sign } from 'hono/jwt'
 import { PrismaClient } from "../generated/prisma/client";
+import { signinInput, signupInput } from "@yashveersinghh/excerpt-common";
 
 export const userRouter = new Hono<{
     Bindings: {
@@ -12,19 +13,26 @@ export const userRouter = new Hono<{
 
 
 userRouter.post('/signup', async (c) => {
+  const body = await c.req.json();
+  const email = body?.email ?? body?.username;
+  if (!email || !body?.password) {
+    return c.json({ error: 'Email and password are required' }, 400)
+  }
+  const success = signupInput.safeParse({
+    ...body,
+    email,
+  });
+  if (!success.success) {
+    return c.json({ error: 'Invalid input', details: success.error }, 400)
+  }
   const prisma = new PrismaClient({
     accelerateUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
   try {
-    const body = await c.req.json();
-    if (!body?.email || !body?.password) {
-      return c.json({ error: 'Email and password are required' }, 400)
-    }
-
     const user = await prisma.user.create({
       data:{
-        email: body.email,
+        email,
         password: body.password,
         name: body.name || null
       }
@@ -46,14 +54,22 @@ userRouter.post('/signup', async (c) => {
 })
 
 userRouter.post('/signin', async (c) => {
+  const body = await c.req.json();
+  const email = body?.email ?? body?.username;
+  const success = signinInput.safeParse({
+    ...body,
+    email,
+  });
+  if (!success.success) {
+    return c.json({ error: 'Invalid input', details: success.error }, 400)
+  }
 	const prisma = new PrismaClient({
 		accelerateUrl: c.env.DATABASE_URL,
 	}).$extends(withAccelerate());
 
-	const body = await c.req.json();
 	const user = await prisma.user.findUnique({
 		where: {
-			email: body.email,
+      email,
       password: body.password
 		}
 	});

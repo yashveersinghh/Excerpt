@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@prisma/extension-accelerate": "^3.0.1",
+    "@yashveersinghh/excerpt-common": "^1.0.1",
     "hono": "^4.12.11",
     "prisma": "^7.7.0"
   },

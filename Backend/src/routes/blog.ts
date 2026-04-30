@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { verify } from 'hono/jwt'
 import { PrismaClient } from "../generated/prisma/client";
+import { createBlogInput } from "@yashveersinghh/excerpt-common";
 
 export const blogRouter = new Hono<{
     Bindings: {
@@ -34,10 +35,14 @@ blogRouter.use('/*', async (c, next) => {
 })
 
 blogRouter.post('/', async(c) => {
+    const body = await c.req.json();
+    const success = createBlogInput.safeParse(body);
+    if (!success.success) {
+      return c.json({ error: 'Invalid input', details: success.error }, 400)
+    }
     const prisma = new PrismaClient({
         accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
-    const body = await c.req.json();
     const userId = c.get('userId');
 
   const blog = await prisma.post.create({
@@ -52,10 +57,14 @@ blogRouter.post('/', async(c) => {
     })
 })
 blogRouter.put('/', async(c) => {
+  const body = await c.req.json();
+  const success = createBlogInput.safeParse(body);
+    if (!success.success) {
+      return c.json({ error: 'Invalid input', details: success.error }, 400)
+    }
   const prisma = new PrismaClient({
         accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
-    const body = await c.req.json();
 
     if (!body?.id || !body?.title || !body?.content) {
       return c.json({ error: 'id, title and content are required' }, 400)
