@@ -4,7 +4,7 @@ import { NavBar } from "../components/NavBar"
 
 export const Home = () => {
     return (
-        <div className="bg-neutral-300 flex flex-col h-screen overflow-hidden">
+        <div className="bg-neutral-300 flex flex-col h-dvh overflow-hidden">
             <NavBar />
             <Hero />
             <Footer />
