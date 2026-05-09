@@ -51,6 +51,14 @@ export const Signin = () => {
                             placeholder="Enter your email address" 
                         />
                     </div>
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-sm font-medium text-gray-700">Password</label>
+                        <input 
+                            className="bg-white border border-gray-300 p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition" 
+                            type="password" 
+                            placeholder="Enter your password" 
+                        />
+                    </div>
                     <button className="bg-black hover:bg-gray-900 cursor-pointer text-white py-3 px-4 rounded-lg text-base font-medium transition mt-2 w-full">
                         Continue
                     </button>
