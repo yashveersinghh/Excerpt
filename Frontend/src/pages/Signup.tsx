@@ -8,7 +8,6 @@ import toast from "react-hot-toast";
 
 export const Signup = () => {
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate()
     const [inputData, setInputData] = useState({
         name: "",
@@ -22,7 +21,6 @@ export const Signup = () => {
   });
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError(null);
         const missingName = !inputData.name.trim();
         const missingEmail = !inputData.email.trim();
         const missingPassword = !inputData.password.trim();
@@ -49,7 +47,6 @@ export const Signup = () => {
         } catch (err) {
             const axiosError = err as AxiosError<{ error: string }>;
             const errMsg = axiosError.response?.data?.error || "Signup failed. Please try again.";
-            setError(errMsg);
             toast.error(errMsg);
         } finally {
             setLoading(false);
@@ -95,12 +92,6 @@ export const Signup = () => {
                     <span className="text-gray-500 text-sm font-medium">Or continue with email</span>
                     <div className="flex-1 h-px bg-gray-300"></div>
                 </div>
-
-                {error && (
-                    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg text-sm">
-                        {error}
-                    </div>
-                )}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                     <div className="flex flex-col gap-4">
