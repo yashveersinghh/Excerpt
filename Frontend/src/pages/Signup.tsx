@@ -15,10 +15,10 @@ export const Signup = () => {
         password: ""
     });
     const [validationErrors, setValidationErrors] = useState({
-    name: false,
-    email: false,
-    password: false
-  });
+        name: false,
+        email: false,
+        password: false
+    });
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const missingName = !inputData.name.trim();
@@ -43,7 +43,7 @@ export const Signup = () => {
             const jwt = response.data.jwt;
             localStorage.setItem("token", jwt);
             toast.success("Account created successfully!");
-            navigate("/blogs");
+            navigate("/");
         } catch (err) {
             const axiosError = err as AxiosError<{ error: string }>;
             const errMsg = axiosError.response?.data?.error || "Signup failed. Please try again.";
