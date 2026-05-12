@@ -1,5 +1,6 @@
 import { GoogleLogin } from "@react-oauth/google"
 import { useNavigate } from "react-router-dom"
+import { AiOutlineClose } from "react-icons/ai";
 import { jwtDecode } from "jwt-decode"
 import { useState } from "react";
 import { toast } from "react-hot-toast/headless";
@@ -49,8 +50,16 @@ export const Signin = () => {
 };
     return (
         <div className="bg-white md:bg-neutral-300 min-h-screen w-screen flex justify-center items-center px-4 py-8">
-            <div className="bg-white w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8">
+            <div className="bg-white w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8 relative">
                 <div className="flex flex-col gap-2">
+                    <button
+                        type="button"
+                        aria-label="Close and go home"
+                        onClick={() => navigate('/')}
+                        className="absolute top-4 right-4 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-800 hover:bg-gray-100 focus:outline-none"
+                    >
+                        <AiOutlineClose className="w-4 h-4" />
+                    </button>
                     <h1 className="text-4xl sm:text-4xl md:text-5xl font-semibold">Welcome back.</h1>
                     <p className="text-gray-600 text-sm md:text-base">Sign in to continue sharing your thoughts with the world</p>
                 </div>

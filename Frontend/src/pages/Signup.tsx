@@ -5,6 +5,7 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { BACKEND_URL } from "../config";
 import toast from "react-hot-toast";
+import { AiOutlineClose } from "react-icons/ai";
 
 export const Signup = () => {
     const [loading, setLoading] = useState(false);
@@ -54,8 +55,16 @@ export const Signup = () => {
 };
     return (
         <div className="bg-white md:bg-neutral-300 min-h-screen w-screen flex justify-center items-center px-4 py-8">
-            <div className="bg-white w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8">
+            <div className="bg-white w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8 relative">
                 <div className="flex flex-col gap-2">
+                    <button
+                        type="button"
+                        aria-label="Close and go home"
+                        onClick={() => navigate('/')}
+                        className="absolute top-4 right-4 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-800 hover:bg-gray-100 focus:outline-none"
+                    >
+                        <AiOutlineClose className="w-4 h-4" />
+                    </button>
                     <h1 className="text-4xl sm:text-4xl md:text-5xl font-semibold">Join Excerpt.</h1>
                     <p className="text-gray-600 text-sm md:text-base">Start sharing your thoughts with the world</p>
                 </div>
