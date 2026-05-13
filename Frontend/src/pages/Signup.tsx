@@ -5,10 +5,11 @@ import { useState } from "react";
 import axios, { AxiosError } from "axios";
 import { BACKEND_URL } from "../config";
 import toast from "react-hot-toast";
-import { AiOutlineClose } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 export const Signup = () => {
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate()
     const [inputData, setInputData] = useState({
         name: "",
@@ -61,7 +62,7 @@ export const Signup = () => {
                         type="button"
                         aria-label="Close and go home"
                         onClick={() => navigate('/')}
-                        className="absolute top-4 right-4 inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-800 hover:bg-gray-100 focus:outline-none"
+                        className="absolute top-4 right-4 max-sm:hidden inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-gray-800 hover:bg-gray-100 focus:outline-none"
                     >
                         <AiOutlineClose className="w-4 h-4" />
                     </button>
@@ -136,17 +137,31 @@ export const Signup = () => {
 
                         <div className="flex flex-col gap-1.5">
                             <label className="text-sm font-medium text-gray-700">Password</label>
-                            <input 
-                                className={`bg-white border ${validationErrors.password ? 'border-red-500' : 'border-gray-300'} p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition`}
-                                type="password" 
-                                placeholder="Enter your password" 
-                                value={inputData.password}
-                                onChange={(e) => {
-                                setInputData({ ...inputData, password: e.target.value });
-                                    if (validationErrors.password) setValidationErrors({ ...validationErrors, password: false });
-                                }}
-                                required
-                            />
+                            <div className="relative">
+                                <input 
+                                    className={`bg-white border ${validationErrors.password ? 'border-red-500' : 'border-gray-300'} p-3 pr-12 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition`}
+                                    type={showPassword ? "text" : "password"} 
+                                    placeholder="Enter your password" 
+                                    value={inputData.password}
+                                    onChange={(e) => {
+                                    setInputData({ ...inputData, password: e.target.value });
+                                        if (validationErrors.password) setValidationErrors({ ...validationErrors, password: false });
+                                    }}
+                                    required
+                                />
+                                <button 
+                                    type="button" 
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition"
+                                    onClick={() => setShowPassword((prev) => !prev)}
+                                    aria-label={showPassword ? "Hide password" : "Show password"}
+                                >
+                                    {showPassword ? (
+                                        <AiOutlineEyeInvisible className="w-5 h-5" />
+                                    ) : (
+                                        <AiOutlineEye className="w-5 h-5" />
+                                    )}
+                                </button>
+                            </div>
                         </div>
                         <button className="bg-black hover:bg-gray-900 disabled:opacity-60 cursor-pointer text-white py-3 px-4 rounded-lg text-base font-medium transition mt-2 w-full"
                             type="submit"
