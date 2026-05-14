@@ -1,7 +1,6 @@
 import { GoogleLogin } from "@react-oauth/google"
 import { useNavigate } from "react-router-dom"
 import { AiOutlineClose, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import { jwtDecode } from "jwt-decode"
 import { useState } from "react";
 import { toast } from "react-hot-toast/headless";
 import { BACKEND_URL } from "../config";
@@ -66,23 +65,31 @@ export const Signin = () => {
                 </div>
 
                 <GoogleLogin
-                    onSuccess={(credentialResponse) => {
-                        console.log(credentialResponse);
-                        const token = credentialResponse?.credential
+                    onSuccess={async (credentialResponse) => {
+                        const token = credentialResponse?.credential;
                         if (!token) {
                             console.error('No credential returned in response', credentialResponse)
                             toast.error("Google sign-in failed. Please try again.")
                             return
                         }
+
                         try {
-                            const decoded = jwtDecode(token)
-                            console.log(decoded)
-                            toast.success("Signed in successfully!")
+                            setLoading(true);
+                            const response = await axios.post(`${BACKEND_URL}/api/v1/user/google-signin`, {
+                                token,
+                            });
+
+                            const jwt = response.data.jwt;
+                            localStorage.setItem("token", jwt);
+                            toast.success("Signed in successfully!");
+                            navigate('/');
                         } catch (err) {
-                            console.error('Failed to decode credential', err)
-                            toast.error("Google sign-in failed. Please try again.")
+                            const axiosError = err as AxiosError<{ error: string }>;
+                            const errMsg = axiosError.response?.data?.error || "Google sign-in failed. Please try again.";
+                            toast.error(errMsg);
+                        } finally {
+                            setLoading(false);
                         }
-                        navigate('/')
                     }}
                     onError={() => {
                         console.log('Login Failed');

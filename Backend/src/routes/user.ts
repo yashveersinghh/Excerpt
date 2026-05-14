@@ -4,11 +4,13 @@ import { sign } from 'hono/jwt'
 import { PrismaClient } from "../generated/prisma/client";
 import { signinInput, signupInput } from "@yashveersinghh/excerpt-common";
 import bcrypt from "bcryptjs";
+import { OAuth2Client } from "google-auth-library";
 
 export const userRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string,
-        JWT_SECRET: string
+        JWT_SECRET: string,
+        GOOGLE_CLIENT_ID: string
     }
 }>();
 
@@ -89,4 +91,50 @@ userRouter.post('/signin', async (c) => {
 
 	const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
 	return c.json({ jwt });
+})
+
+userRouter.post('/google-auth', async(c)=>{
+  const body = await c.req.json();
+  const { token } = body;
+
+  if(!token){
+    return c.json({ error: 'Token is required'}, 400);
+  }
+  const client = new OAuth2Client(c.env.GOOGLE_CLIENT_ID);
+
+  try{
+      const ticket = await client.verifyIdToken({
+        idToken: token,
+        audience: c.env.GOOGLE_CLIENT_ID,
+      })
+    
+      const payload = ticket.getPayload();
+      if(!payload){
+        return c.json({ error: 'Invalid token'}, 401);
+      }
+      const { email,name } = payload;
+    
+      const prisma = new PrismaClient({
+        accelerateUrl: c.env.DATABASE_URL,
+      }).$extends(withAccelerate());
+    
+      let user = await prisma.user.findUnique({
+        where: { email: email! }
+      })
+    
+      if(!user){
+        user = await prisma.user.create({
+          data:{
+            email: email!,
+            name: name || null,
+            password: ''
+          }
+        })
+      }
+      const jwt = await sign({ id: user.id }, c.env.JWT_SECRET);
+      return c.json({ jwt });
+  } catch(err){
+    console.error('Google authentication failed:', err);
+    return c.json({ error: 'Google authentication failed'}, 401);
+  }
 })
