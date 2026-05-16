@@ -5,6 +5,7 @@ import { Signin } from './pages/Signin'
 import { Blog } from './pages/Blog'
 import { Home } from './pages/Home'
 import { Toaster } from 'react-hot-toast'
+import { NewStory } from './pages/NewStory'
 
 function App() {
   return (
@@ -15,7 +16,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/signin" element={<Signin />} />
-          <Route path="/blog/:id" element={<Blog />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/new-story" element={<NewStory />} />
         </Routes>
       </BrowserRouter>
     </>

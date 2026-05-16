@@ -1,5 +1,9 @@
+import { BlogNav } from "../components/BlogNav"
+
 export const Blog = () => {
     return (
-        <div></div>
+        <div>
+            <BlogNav />
+        </div>
     )
 }

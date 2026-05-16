@@ -39,7 +39,7 @@ export const Signin = () => {
             const jwt = response.data.jwt;
             localStorage.setItem("token", jwt);
             toast.success("Signed in successfully!");
-            navigate("/");
+            navigate("/blog");
         } catch (err) {
             const axiosError = err as AxiosError<{ error: string }>;
             const errMsg = axiosError.response?.data?.error || "Sign-in failed. Please try again.";
@@ -82,7 +82,7 @@ export const Signin = () => {
                             const jwt = response.data.jwt;
                             localStorage.setItem("token", jwt);
                             toast.success("Signed in successfully!");
-                            navigate('/');
+                            navigate('/blog');
                         } catch (err) {
                             const axiosError = err as AxiosError<{ error: string }>;
                             const errMsg = axiosError.response?.data?.error || "Google sign-in failed. Please try again.";

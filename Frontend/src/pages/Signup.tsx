@@ -45,7 +45,7 @@ export const Signup = () => {
             const jwt = response.data.jwt;
             localStorage.setItem("token", jwt);
             toast.success("Account created successfully!");
-            navigate("/");
+            navigate("/blog");
         } catch (err) {
             const axiosError = err as AxiosError<{ error: string }>;
             const errMsg = axiosError.response?.data?.error || "Signup failed. Please try again.";
@@ -87,7 +87,7 @@ export const Signup = () => {
                             console.error('Failed to decode credential', err)
                             toast.error("Google signup failed. Please try again.");
                         }
-                        navigate('/')
+                        navigate('/blog')
                     }}
                     onError={() => {
                         console.log('Login Failed');
