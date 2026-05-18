@@ -1,9 +1,12 @@
 import { HiOutlineUser } from "react-icons/hi2";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import ModernRichTextEditor from "../components/ModernRichTextEditor";
 
 export const NewStory = () => {
     const navigate = useNavigate();
+    const [content, setContent] = useState("")
     return (
         <div className="min-h-screen">
             <div className="h-20 flex items-center justify-between px-4 sm:px-8 md:px-40 border-b border-slate-800">
@@ -15,8 +18,8 @@ export const NewStory = () => {
                     <div><HiOutlineUser  className="border border-black rounded-full px-1 text-sm cursor-pointer w-9 h-9"/></div>
                 </div>
             </div>
-            <div className="bg-white w-full flex items-start justify-center py-12 px-4">
-                <div className="w-full max-w-3xl bg-white rounded-2xl shadow-md p-6 md:p-8">
+            <div className="bg-white w-full flex items-start justify-center md:py-6 px-4">
+                <div className="w-full max-w-3xl bg-white rounded-2xl md:shadow-md p-6 md:p-8">
                     <div className="flex items-center gap-3 cursor-pointer text-base font-semibold text-gray-800" onClick={() => navigate('/blog')}>
                         <IoIosArrowRoundBack className="text-2xl"/>
                         <h1 className="m-0">Back</h1>
@@ -51,11 +54,17 @@ export const NewStory = () => {
 
                         <div>
                             <label className="block mb-2 font-medium text-gray-700">Content</label>
-                            <textarea placeholder="Write your content here..." rows={10} className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-gray-300 min-h-65 resize-y" />
+                            <ModernRichTextEditor content={content} onChange={setContent} placeholder="Write your content here..." />
                         </div>
 
                         <div className="flex justify-center pt-2">
-                            <button className="bg-black text-white hover:bg-gray-200 hover:text-black hover:border cursor-pointer py-2 px-6 rounded-3xl hover:opacity-95 transition">Create Post</button>
+                            <button
+                                type="button"
+                                onClick={() => console.log({ content })}
+                                className="flex items-center gap-2 rounded-full border border-gray-900 px-6 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-green-600 hover:text-white cursor-pointer"
+                            >
+                                Create Post
+                            </button>
                         </div>
                     </div>
                 </div>
