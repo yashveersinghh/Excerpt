@@ -1,15 +1,16 @@
 import { HiOutlineUser } from "react-icons/hi2";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { FaRegFileImage } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ModernRichTextEditor from "../components/ModernRichTextEditor";
 
 export const NewStory = () => {
     const navigate = useNavigate();
-    const [content, setContent] = useState("")
+    const [content, setContent] = useState("");
     return (
         <div className="min-h-screen">
-            <div className="h-20 flex items-center justify-between px-4 sm:px-8 md:px-40 border-b border-slate-800">
+            <div className="bg-neutral-50 h-20 flex items-center justify-between px-4 sm:px-8 md:px-40 border-b border-slate-800">
                 <div className="flex items-center gap-8">
                     <div onClick={() => {navigate('/blog')}} className="cursor-pointer medium-heading-font font-extrabold text-3xl sm:text-3xl flex">Excerpt</div>
                 </div>
@@ -18,8 +19,8 @@ export const NewStory = () => {
                     <div><HiOutlineUser  className="border border-black rounded-full px-1 text-sm cursor-pointer w-9 h-9"/></div>
                 </div>
             </div>
-            <div className="bg-white w-full flex items-start justify-center md:py-6 px-4">
-                <div className="w-full max-w-3xl bg-white rounded-2xl md:shadow-md p-6 md:p-8">
+            <div className="bg-neutral-50 w-full flex items-start justify-center md:py-6 px-4">
+                <div className="w-full max-w-3xl bg-neutral-50 rounded-2xl md:shadow-md p-6 md:p-8">
                     <div className="flex items-center gap-3 cursor-pointer text-base font-semibold text-gray-800" onClick={() => navigate('/blog')}>
                         <IoIosArrowRoundBack className="text-2xl"/>
                         <h1 className="m-0">Back</h1>
@@ -45,9 +46,9 @@ export const NewStory = () => {
                             <label className="block mb-2 font-medium text-gray-700">Cover Image</label>
                             <input type="file" accept="image/*" className="hidden" />
                             <div className="rounded-lg border-2 border-dashed border-gray-300 p-6 flex items-center justify-center text-center text-gray-500 hover:border-gray-400 cursor-pointer">
-                                <div>
+                                <div className="flex flex-col items-center gap-2">
                                     <div className="font-semibold">Drop image here or click to upload</div>
-                                    <div className="text-sm mt-1 text-gray-400">Recommended: 1600×900 • PNG / JPG • &lt; 3MB</div>
+                                    <FaRegFileImage className="text-2xl" />
                                 </div>
                             </div>
                         </div>

@@ -72,9 +72,13 @@ userRouter.post('/signin', async (c) => {
 		accelerateUrl: c.env.DATABASE_URL,
 	}).$extends(withAccelerate());
 
-	const user = await prisma.user.findUnique({
+	// Use case-insensitive lookup so signup casing doesn't block signin
+	const user = await prisma.user.findFirst({
 		where: {
-      email,
+			email: {
+				equals: email,
+				mode: 'insensitive',
+			},
 		}
 	});
 

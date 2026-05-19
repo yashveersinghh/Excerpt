@@ -9,8 +9,8 @@ export const BlogDetails = () => {
     return (
         <div>
             <BlogNav />
-            <div className="bg-white w-full flex items-start justify-center md:py-6 px-4">
-                <div className="w-full max-w-3xl bg-white rounded-2xl p-6 md:p-8">
+            <div className="bg-neutral-50 w-full flex items-start justify-center md:py-6 px-4">
+                <div className="w-full max-w-3xl bg-neutral-50 rounded-2xl p-6 md:p-8">
                     <div className="flex items-center gap-3 cursor-pointer text-base font-semibold text-gray-800" onClick={() => navigate('/blog')}>
                         <IoIosArrowRoundBack className="text-2xl"/>
                         <h1 className="m-0">Back</h1>

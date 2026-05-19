@@ -2,7 +2,7 @@ import { GoogleLogin } from "@react-oauth/google"
 import { useNavigate } from "react-router-dom"
 import { AiOutlineClose, AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { useState } from "react";
-import { toast } from "react-hot-toast/headless";
+import toast from "react-hot-toast";
 import { BACKEND_URL } from "../config";
 import axios, { AxiosError } from "axios";
 
@@ -49,8 +49,8 @@ export const Signin = () => {
         }
 };
     return (
-        <div className="bg-white md:bg-neutral-300 min-h-screen w-screen flex justify-center items-center px-4 py-8">
-            <div className="bg-white w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8 relative">
+        <div className="bg-neutral-50 md:bg-neutral-300 min-h-screen w-screen flex justify-center items-center px-4 py-8">
+            <div className="bg-neutral-50 w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8 relative">
                 <div className="flex flex-col gap-2">
                     <button
                         type="button"
@@ -75,7 +75,7 @@ export const Signin = () => {
 
                         try {
                             setLoading(true);
-                            const response = await axios.post(`${BACKEND_URL}/api/v1/user/google-signin`, {
+                            const response = await axios.post(`${BACKEND_URL}/api/v1/user/google-auth`, {
                                 token,
                             });
 
