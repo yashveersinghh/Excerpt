@@ -1,14 +1,18 @@
 import { BlogCard } from "../components/BlogCard"
+import BlogCardSkeleton from "../components/BlogCardSkeleton";
 import { BlogNav } from "../components/BlogNav"
 import { Search } from "../components/Search"
 import { useBlog } from "../hooks";
+import type { Blog as BlogType } from "../hooks";
 
 export const Blog = () => {
     const { loading, blogs } = useBlog();
     if(loading) {
         return (
             <div>
-                loading...
+                <BlogNav />
+                <div className="sm:hidden px-4 py-3 mt-3"><Search /></div>
+                <BlogCardSkeleton />
             </div>
         )
     }
@@ -16,12 +20,16 @@ export const Blog = () => {
         <div>
             <BlogNav />
             <div className="sm:hidden px-4 py-3 mt-3"><Search /></div>
-            <BlogCard 
-                authorName="Yashveer"
-                publishedDate="May 16"
-                title="How to CODE?"
-                summary="Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto, molestiae!"
-            />
+            {(Array.isArray(blogs) ? blogs : []).map((blog: BlogType) => (
+                <BlogCard 
+                    key={blog.id}
+                    authorName={blog.author?.name ?? "Unknown Author"}
+                    publishedDate={blog.publishedAt ?? (blog.published ? 'Published' : '')}
+                    title={blog.title ?? ''}
+                    summary={blog.content ?? ''}
+                />
+
+            ))}
         </div>
     )
 }
