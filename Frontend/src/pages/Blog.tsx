@@ -13,6 +13,8 @@ export const Blog = () => {
                 <BlogNav />
                 <div className="sm:hidden px-4 py-3 mt-3"><Search /></div>
                 <BlogCardSkeleton />
+                <BlogCardSkeleton />
+                <BlogCardSkeleton />
             </div>
         )
     }

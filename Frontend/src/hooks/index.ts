@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useEffect, useState } from 'react'
+import { BACKEND_URL } from '../config'
 
 export interface Blog {
     id: string
@@ -18,7 +19,7 @@ export const useBlog = () => {
     useEffect(() => {
         async function fetchBlogs() {
             try {
-                const response = await axios.get(`{$BACKEND_URL}/api/v1/blog/bulk`, {
+                const response = await axios.get(`${BACKEND_URL}/api/v1/blog/bulk`, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`,
                     },
