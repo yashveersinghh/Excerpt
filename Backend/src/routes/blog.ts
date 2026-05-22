@@ -35,43 +35,62 @@ blogRouter.use('/*', async (c, next) => {
 })
 
 blogRouter.post('/', async(c) => {
+  try {
     const body = await c.req.json();
-    const success = createBlogInput.safeParse(body);
-    if (!success.success) {
-      return c.json({ error: 'Invalid input', details: success.error }, 400)
+    const parsed = createBlogInput.safeParse(body);
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid input', details: parsed.error.flatten() }, 400)
     }
+    const data = parsed.data;
     const prisma = new PrismaClient({
-        accelerateUrl: c.env.DATABASE_URL,
+      accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const userId = c.get('userId');
 
-  const blog = await prisma.post.create({
-        data: {
-            title: body.title,
-            content: body.content,
-            authorId: userId,
-            summary: body.summary,
-            publishedAt: body.publishedAt,
-            imageUrl: body.imageUrl
-        }
-    })
-    return c.json({
-    id: blog.id
-    })
+    const blog = await prisma.post.create({
+      data: {
+        title: data.title,
+        content: data.content,
+        authorId: userId,
+        summary: data.summary,
+        publishedAt: new Date(data.publishedAt),
+        imageUrl: data.imageUrl ?? null,
+      },
+    });
+    return c.json({ id: blog.id });
+  } catch (err) {
+    console.error('Create blog error:', err);
+    const message =
+      err && typeof err === 'object' && 'message' in err
+        ? String((err as { message: unknown }).message)
+        : String(err);
+    if (message.includes('column') || message.includes('does not exist')) {
+      return c.json(
+        {
+          error: 'Database schema is out of date. Run: npx prisma migrate deploy',
+          details: message,
+        },
+        500
+      );
+    }
+    return c.json({ error: 'Create blog failed', details: message }, 500);
+  }
 })
 blogRouter.put('/', async(c) => {
   const body = await c.req.json();
-  const success = createBlogInput.safeParse(body);
-    if (!success.success) {
-      return c.json({ error: 'Invalid input', details: success.error }, 400)
+  const parsed = createBlogInput.safeParse(body);
+    if (!parsed.success) {
+      return c.json({ error: 'Invalid input', details: parsed.error.flatten() }, 400)
     }
   const prisma = new PrismaClient({
         accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
 
-    if (!body?.id || !body?.title || !body?.content) {
-      return c.json({ error: 'id, title and content are required' }, 400)
+    if (!body?.id) {
+      return c.json({ error: 'id is required' }, 400)
     }
+
+    const data = parsed.data;
 
     try {
       await prisma.post.update({
@@ -79,11 +98,11 @@ blogRouter.put('/', async(c) => {
               id: body.id
           },
           data: {
-              title: body.title,
-              content: body.content,
-              summary: body.summary,
-              publishedAt: body.publishedAt,
-              imageUrl: body.imageUrl
+              title: data.title,
+              content: data.content,
+              summary: data.summary,
+              publishedAt: new Date(data.publishedAt),
+              imageUrl: data.imageUrl ?? null
           }
       })
       return c.json({
@@ -100,8 +119,9 @@ blogRouter.put('/', async(c) => {
 })
 //add pagination
 blogRouter.get('/bulk', async(c) => {
+  try {
     const prisma = new PrismaClient({
-        accelerateUrl: c.env.DATABASE_URL,
+      accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const blogs = await prisma.post.findMany({
       select: {
@@ -116,44 +136,47 @@ blogRouter.get('/bulk', async(c) => {
             name: true
           }
         }
-      }
+      },
+      orderBy: { publishedAt: 'desc' }
     });
     return c.json({
       blogs
     })
+  } catch (err) {
+    console.error('Fetch bulk blogs error:', err);
+    return c.json({ error: 'Failed to fetch blogs', details: String(err) }, 500);
+  }
 })
 
 blogRouter.get('/:id', async(c) => {
-  const prisma = new PrismaClient({
-        accelerateUrl: c.env.DATABASE_URL,
+  try {
+    const prisma = new PrismaClient({
+      accelerateUrl: c.env.DATABASE_URL,
     }).$extends(withAccelerate());
     const id = await c.req.param('id');
-    try{
-      const blog = await prisma.post.findFirst({
-          where:{
-              id: id
-          },
+    const blog = await prisma.post.findFirst({
+      where: { id: id },
+      select: {
+        content: true,
+        id: true,
+        title: true,
+        summary: true,
+        publishedAt: true,
+        imageUrl: true,
+        author: {
           select: {
-            content: true,
-            id: true,
-            title: true,
-            summary: true,
-            publishedAt: true,
-            imageUrl: true,
-            author: {
-              select: {
-                name: true
-              }
-            }
+            name: true
           }
-      })
-      return c.json({
-        blog
-      })
-    } catch(e){
+        }
+      }
+    })
+    if (!blog) {
       c.status(404);
-      return c.json({
-        error: 'Blog not found'
-      })
+      return c.json({ error: 'Blog not found' })
     }
+    return c.json({ blog })
+  } catch (err) {
+    console.error('Fetch blog error:', err);
+    return c.json({ error: 'Failed to fetch blog', details: String(err) }, 500);
+  }
 })

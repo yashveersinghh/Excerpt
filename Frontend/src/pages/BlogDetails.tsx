@@ -25,8 +25,10 @@ export const BlogDetails = () => {
                 id={blog.id}
                 title={blog.title ?? ''}
                 content={blog.content ?? ''}
+                summary={blog.summary ?? ''}
                 author={blog.author ?? null}
                 publishedAt={formatPublishedDate(blog.publishedAt)}
+                imageUrl={blog.imageUrl ?? ''}
             />
         </div>
     )

@@ -7,6 +7,7 @@ import { Avatar } from "../components/Avatar";
 import axios from 'axios';
 import { BACKEND_URL } from "../config";
 import toast from "react-hot-toast";
+import { textFromHtml } from "../utils/html";
 
 export const NewStory = () => {
     const navigate = useNavigate();
@@ -15,6 +16,7 @@ export const NewStory = () => {
     const [content, setContent] = useState("");
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState("");
+    const [submitting, setSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
@@ -24,33 +26,82 @@ export const NewStory = () => {
     }, [previewUrl])
 
     const handleCreate = async () => {
+        if (submitting) return;
+
+        if (!title.trim() || !summary.trim() || !textFromHtml(content)) {
+            toast.error("Title, summary and content are required");
+            return;
+        }
+        if (summary.trim().length > 280) {
+            toast.error("Summary must be 280 characters or less");
+            return;
+        }
+        if (!selectedFile) {
+            toast.error("Cover image is required");
+            return;
+        }
+
+        const token = localStorage.getItem("token");
+        if (!token) {
+            toast.error("Please sign in first");
+            navigate("/signin");
+            return;
+        }
+
+        const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+        const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+        if (!cloudName || !uploadPreset) {
+            toast.error("Image upload is not configured");
+            return;
+        }
+
+        setSubmitting(true);
         try {
-            let imageUrl = "";
-            if (selectedFile) {
-                const cloudName = (import.meta).env.VITE_CLOUDINARY_CLOUD_NAME
-                const uploadPreset = (import.meta).env.VITE_CLOUDINARY_UPLOAD_PRESET
-                const fd = new FormData();
-                fd.append('file', selectedFile);
-                fd.append('upload_preset', uploadPreset);
-                const uploadRes = await axios.post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, fd);
-                imageUrl = uploadRes?.data?.secure_url ?? '';
+            const fd = new FormData();
+            fd.append("file", selectedFile);
+            fd.append("upload_preset", uploadPreset);
+            const uploadRes = await axios.post(
+                `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+                fd,
+                { timeout: 120_000 }
+            );
+            const imageUrl = uploadRes?.data?.secure_url as string | undefined;
+            if (!imageUrl) {
+                toast.error("Image upload failed — please try again");
+                return;
             }
 
-            const body = {
-                title,
-                content,
-                summary,
-                imageUrl,
-                publishedAt: new Date().toISOString()
-            }
-
-            await axios.post(`${BACKEND_URL}/api/v1/blog`, body, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-            });
-            navigate('/blog');
+            await axios.post(
+                `${BACKEND_URL}/api/v1/blog`,
+                {
+                    title: title.trim(),
+                    content,
+                    summary: summary.trim(),
+                    imageUrl,
+                    publishedAt: new Date().toISOString(),
+                },
+                { headers: { Authorization: `Bearer ${token}` } }
+            );
+            toast.success("Post created");
+            navigate("/blog");
         } catch (err) {
-            console.error('Create post failed', err);
-            toast.error('Failed to create post. Please try again.');
+            console.error("Create post failed", err);
+            if (axios.isAxiosError(err)) {
+                const status = err.response?.status;
+                const data = err.response?.data as { error?: string; details?: string };
+                if (status === 401) {
+                    toast.error("Session expired — please sign in again");
+                    navigate("/signin");
+                    return;
+                }
+                const message = data?.error ?? "Failed to create post";
+                toast.error(message);
+                if (data?.details) console.error("Server details:", data.details);
+                return;
+            }
+            toast.error("Failed to create post. Please try again.");
+        } finally {
+            setSubmitting(false);
         }
     }
 
@@ -98,15 +149,17 @@ export const NewStory = () => {
                             }} type="file" accept="image/*" className="hidden" />
 
                             {previewUrl ? (
-                                <img src={previewUrl} alt="preview" className="w-full h-48 object-cover rounded mb-3" />
-                            ) : null}
-
-                            <div onClick={() => fileInputRef.current?.click()} className="rounded-lg border-2 border-dashed border-gray-300 p-6 flex items-center justify-center text-center text-gray-500 hover:border-gray-400 cursor-pointer">
-                                <div className="flex flex-col items-center gap-2">
-                                    <div className="font-semibold">Drop image here or click to upload</div>
-                                    <FaRegFileImage className="text-2xl" />
+                                <div className="w-full h-56 overflow-hidden rounded-lg border border-gray-200 bg-white mb-3 flex items-center justify-center">
+                                    <img src={previewUrl} alt="preview" className="w-full h-full object-contain" />
                                 </div>
-                            </div>
+                            ) : (
+                                <div onClick={() => fileInputRef.current?.click()} className="rounded-lg border-2 border-dashed border-gray-300 p-6 flex items-center justify-center text-center text-gray-500 hover:border-gray-400 cursor-pointer">
+                                    <div className="flex flex-col items-center gap-2">
+                                        <div className="font-semibold">Drop image here or click to upload</div>
+                                        <FaRegFileImage className="text-2xl" />
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         <div>
@@ -118,9 +171,10 @@ export const NewStory = () => {
                             <button
                                 type="button"
                                 onClick={handleCreate}
-                                className="flex items-center gap-2 rounded-full border border-gray-900 px-6 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-green-600 hover:text-white cursor-pointer"
+                                disabled={submitting}
+                                className="flex items-center gap-2 rounded-full border border-gray-900 px-6 py-2.5 text-sm font-medium text-gray-900 transition hover:bg-green-600 hover:text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                Create Post
+                                {submitting ? "Creating…" : "Create Post"}
                             </button>
                         </div>
                     </div>

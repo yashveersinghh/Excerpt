@@ -7,6 +7,7 @@ interface BlogDetailsProps {
     id: string;
     title: string;
     content: string;
+    summary?: string;
     author: { name?: string } | null;
     publishedAt: string;
     imageUrl?: string;
@@ -25,6 +26,9 @@ export const BlogContent = (props: BlogDetailsProps) => {
                     </div>
                     <div className="mt-6">
                         <div className="text-3xl font-bold">{props.title}</div>
+                        {props.summary ? (
+                            <p className="mt-3 text-lg text-gray-600">{props.summary}</p>
+                        ) : null}
                         <div className="flex items-center gap-4 text-sm mt-4 mb-4 text-gray-600">
                             <div className="flex items-center gap-1">
                                 <BiUser />
@@ -36,9 +40,10 @@ export const BlogContent = (props: BlogDetailsProps) => {
                             </div>
                         </div>
                     </div>
-                    <div className="mt-6 space-y-4 text-gray-700">
-                        {props.content}
-                    </div>
+                    <div
+                        className="rich-text-editor mt-6 space-y-4 text-gray-700 prose prose-neutral max-w-none"
+                        dangerouslySetInnerHTML={{ __html: props.content }}
+                    />
                 </div>
             </div>
     )
