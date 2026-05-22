@@ -6,13 +6,42 @@ export interface Blog {
     id: string
     title?: string
     content?: string
-    // keep publishedAt optional — you mentioned adding it later
+    summary?: string
+    imageUrl?: string
     publishedAt?: string
     published?: boolean
     author?: { name?: string } | null
 }
 
-export const useBlog = () => {
+export const useBlog = ({ id }: { id: string }) => {
+    const [blog, setBlog] = useState<Blog | undefined>()
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        async function fetchBlogs() {
+            try {
+                const response = await axios.get(`${BACKEND_URL}/api/v1/blog/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    },
+                })
+
+                const data = response?.data?.blog
+                setBlog(data)
+            } catch (err) {
+                console.error('fetchBlog failed', err)
+                setBlog(undefined)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchBlogs()
+    }, [id])
+
+    return { blog, loading }
+}
+
+export const useBlogs = () => {
     const [blogs, setBlogs] = useState<Blog[]>([])
     const [loading, setLoading] = useState(true)
 

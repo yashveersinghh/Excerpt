@@ -19,7 +19,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/new-story" element={<NewStory />} />
-          <Route path="/blog-details" element={<BlogDetails />} />
+          <Route path="/blog/:id" element={<BlogDetails />} />
         </Routes>
       </BrowserRouter>
     </>

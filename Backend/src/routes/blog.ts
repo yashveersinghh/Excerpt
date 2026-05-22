@@ -49,7 +49,10 @@ blogRouter.post('/', async(c) => {
         data: {
             title: body.title,
             content: body.content,
-            authorId: userId
+            authorId: userId,
+            summary: body.summary,
+            publishedAt: body.publishedAt,
+            imageUrl: body.imageUrl
         }
     })
     return c.json({
@@ -78,6 +81,9 @@ blogRouter.put('/', async(c) => {
           data: {
               title: body.title,
               content: body.content,
+              summary: body.summary,
+              publishedAt: body.publishedAt,
+              imageUrl: body.imageUrl
           }
       })
       return c.json({
@@ -102,6 +108,9 @@ blogRouter.get('/bulk', async(c) => {
         content: true,
         id: true,
         title: true,
+        summary: true,
+        publishedAt: true,
+        imageUrl: true,
         author: {
           select: {
             name: true
@@ -123,6 +132,19 @@ blogRouter.get('/:id', async(c) => {
       const blog = await prisma.post.findFirst({
           where:{
               id: id
+          },
+          select: {
+            content: true,
+            id: true,
+            title: true,
+            summary: true,
+            publishedAt: true,
+            imageUrl: true,
+            author: {
+              select: {
+                name: true
+              }
+            }
           }
       })
       return c.json({
