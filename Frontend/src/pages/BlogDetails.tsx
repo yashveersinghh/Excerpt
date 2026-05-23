@@ -12,7 +12,7 @@ export const BlogDetails = () => {
     if (loading || !blog) {
         return (
             <div>
-                <BlogNav/>
+                <BlogNav name={blog?.author?.name ?? "Unknown Author"} />
                 <BlogSkeleton />
             </div>
         )
@@ -20,7 +20,7 @@ export const BlogDetails = () => {
 
     return (
         <div>
-            <BlogNav />
+            <BlogNav name={blog.author?.name ?? "Unknown Author"} />
             <BlogContent 
                 id={blog.id}
                 title={blog.title ?? ''}

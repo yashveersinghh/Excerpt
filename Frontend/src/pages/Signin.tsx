@@ -49,7 +49,7 @@ export const Signin = () => {
         }
 };
     return (
-        <div className="bg-neutral-50 md:bg-neutral-300 min-h-screen w-screen flex justify-center items-center px-4 py-8">
+        <div className="bg-neutral-50 md:bg-neutral-100 min-h-screen w-screen flex justify-center items-center px-4 py-8">
             <div className="bg-neutral-50 w-full max-w-md rounded-lg md:shadow-2xl flex flex-col gap-6 p-8 relative">
                 <div className="flex flex-col gap-2">
                     <button

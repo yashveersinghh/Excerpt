@@ -1,7 +1,6 @@
 import { BlogCard } from "../components/BlogCard"
 import BlogCardSkeleton from "../components/BlogCardSkeleton";
 import { BlogNav } from "../components/BlogNav"
-import { Search } from "../components/Search"
 import { useBlogs } from "../hooks";
 import type { Blog as BlogType } from "../hooks";
 import { formatPublishedDate } from "../utils/date";
@@ -11,8 +10,7 @@ export const Blog = () => {
     if(loading) {
         return (
             <div>
-                <BlogNav />
-                <div className="sm:hidden px-4 py-3 mt-3"><Search /></div>
+                <BlogNav name={blogs[0]?.author?.name} />
                 <BlogCardSkeleton />
                 <BlogCardSkeleton />
                 <BlogCardSkeleton />
@@ -21,8 +19,7 @@ export const Blog = () => {
     }
     return (
         <div className="bg-neutral-50 min-h-screen">
-            <BlogNav />
-            <div className="sm:hidden px-4 py-3 mt-3"><Search /></div>
+            <BlogNav name={blogs[0]?.author?.name} />
             {(Array.isArray(blogs) ? blogs : []).map((blog: BlogType) => (
                 <BlogCard 
                     id={blog.id}
@@ -30,7 +27,8 @@ export const Blog = () => {
                     authorName={blog.author?.name ?? "Unknown Author"}
                     publishedDate={formatPublishedDate(blog.publishedAt)}
                     title={blog.title ?? ''}
-                    summary={blog.summary ?? blog.content ?? ''}
+                    content={blog.content ?? ''}
+                    summary={blog.summary ?? ''}
                     imageUrl={blog.imageUrl ?? ''}
                 />
 

@@ -1,7 +1,21 @@
-export const Avatar = ({name}: {name: string}) => {
+import { UserRound } from "lucide-react";
+type AvatarProps = {
+    name?: string;
+}
+
+export const Avatar = ({ name }: AvatarProps) => {
+    const initial = name?.trim()?.charAt(0)?.toUpperCase();
+
     return (
-        <div className="relative inline-flex items-center justify-center w-7 h-7 overflow-hidden bg-slate-600 text-neutral-50 border rounded-full">
-            <span className="font-medium text-body">{name[0]}</span>
+        <div
+            className="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden bg-slate-100 text-slate-700 ring-1 ring-slate-200 shadow-sm"
+            style={{ borderRadius: '9999px' }}
+        >
+            {initial ? (
+                <span className="text-sm font-semibold leading-none">{initial}</span>
+            ) : (
+                <UserRound className="text-slate-700" size={18} />
+            )}
         </div>
     )
 }
