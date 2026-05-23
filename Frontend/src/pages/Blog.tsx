@@ -1,6 +1,7 @@
 import { BlogCard } from "../components/BlogCard"
 import BlogCardSkeleton from "../components/BlogCardSkeleton";
 import { BlogNav } from "../components/BlogNav"
+import { Footer } from "../components/Footer";
 import { useBlogs } from "../hooks";
 import type { Blog as BlogType } from "../hooks";
 import { formatPublishedDate } from "../utils/date";
@@ -31,8 +32,8 @@ export const Blog = () => {
                     summary={blog.summary ?? ''}
                     imageUrl={blog.imageUrl ?? ''}
                 />
-
             ))}
+            <Footer />
         </div>
     )
 }

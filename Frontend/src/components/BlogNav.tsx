@@ -8,7 +8,7 @@ type BlogNavProp = {
 export const BlogNav = ({ name }: BlogNavProp) => {
     const navigate = useNavigate();
     return (
-        <div className="h-20 md:h-20 bg-neutral-50 flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-24 xl:px-40 border-b border-gray-200">
+        <div className="h-20 md:h-20 bg-neutral-50 flex items-center justify-between px-4 sm:px-8 md:px-10 lg:px-24 xl:px-40 border-b border-gray-300">
             <div className="flex items-center gap-8">
                 <div onClick={() => {navigate('/blog')}} className="cursor-pointer medium-heading-font font-extrabold text-3xl sm:text-3xl">Excerpt</div>
             </div>

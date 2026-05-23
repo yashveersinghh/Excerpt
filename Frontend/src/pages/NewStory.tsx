@@ -8,6 +8,7 @@ import { BACKEND_URL } from "../config";
 import toast from "react-hot-toast";
 import { textFromHtml } from "../utils/html";
 import { BlogNav } from "../components/BlogNav";
+import { Footer } from "../components/Footer";
 
 export const NewStory = () => {
     const navigate = useNavigate();
@@ -172,6 +173,7 @@ export const NewStory = () => {
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }
