@@ -20,6 +20,17 @@ export const NewStory = () => {
     const [submitting, setSubmitting] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+    const handleRemoveImage = () => {
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        setSelectedFile(null);
+        setPreviewUrl("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    }
+
     useEffect(() => {
         return () => {
             if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -142,8 +153,17 @@ export const NewStory = () => {
                             }} type="file" accept="image/*" className="hidden" />
 
                             {previewUrl ? (
-                                <div className="w-full h-56 overflow-hidden rounded-lg border border-gray-200 bg-white mb-3 flex items-center justify-center">
-                                    <img src={previewUrl} alt="preview" className="w-full h-full object-contain" />
+                                <div>
+                                    <div className="w-full h-56 overflow-hidden rounded-lg border border-gray-200 bg-white mb-3 flex items-center justify-center">
+                                        <img src={previewUrl} alt="preview" className="w-full h-full object-contain" />
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={handleRemoveImage}
+                                        className="text-sm border rounded mt-1 ml-1 cursor-pointer bg-neutral-50 px-2 py-1 font-medium text-red-600"
+                                    >
+                                        Remove
+                                    </button>
                                 </div>
                             ) : (
                                 <div onClick={() => fileInputRef.current?.click()} className="rounded-lg border-2 border-dashed border-gray-300 p-6 flex items-center justify-center text-center text-gray-500 hover:border-gray-400 cursor-pointer">
