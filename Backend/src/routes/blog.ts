@@ -117,6 +117,26 @@ blogRouter.put('/', async(c) => {
       return c.json({ error: 'Internal Server Error' }, 500)
     }
 })
+blogRouter.delete('/:id', async(c) => {
+    const prisma = new PrismaClient({
+        accelerateUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+    const id = c.req.param('id');
+
+    try {
+      await prisma.post.delete({
+        where: { id }
+      })
+      return c.json({ message: 'Blog deleted successfully' })
+    } catch (error) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 'P2025') {
+        return c.json({ error: 'Blog not found' }, 404)
+      }
+
+      console.error('Delete blog failed:', error)
+      return c.json({ error: 'Internal Server Error' }, 500)
+    }
+})
 //add pagination
 blogRouter.get('/bulk', async(c) => {
   try {

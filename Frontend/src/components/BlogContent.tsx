@@ -22,21 +22,21 @@ export const BlogContent = (props: BlogDetailsProps) => {
                         <h1 className="m-0">Back</h1>
                     </div>
                     <div>
-                        <img src={props.imageUrl || "/404.png"} alt="" className="w-full h-100 object-cover mt-4" />
+                        <img src={props.imageUrl || "/404.png"} alt="" className="w-full h-100 object-contain mt-4" />
                     </div>
                     <div className="mt-6">
                         <div className="text-3xl font-bold">{props.title}</div>
                         {props.summary ? (
-                            <p className="mt-3 text-lg text-gray-600">{props.summary}</p>
+                            <p className="mt-3 font-bold text-lg text-gray-600">{props.summary}</p>
                         ) : null}
-                        <div className="flex items-center gap-4 text-sm mt-4 mb-4 text-gray-600">
+                        <div className="flex items-center gap-4 text-sm mt-6 mb-4 text-gray-600">
                             <div className="flex items-center gap-1">
-                                <BiUser />
-                                <div className="hover:underline">{props.author?.name}</div>
+                                <BiUser className="text-xl font-extrabold text-black" />
+                                <div className="hover:underline font-bold">{props.author?.name}</div>
                             </div>
                             <div className="flex items-center gap-1">
-                                <SlCalender />
-                                <div>{props.publishedAt}</div>
+                                <SlCalender className="text-xl font-extrabold text-black" />
+                                <div className="font-bold">{props.publishedAt}</div>
                             </div>
                         </div>
                     </div>
