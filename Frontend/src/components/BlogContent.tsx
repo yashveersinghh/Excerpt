@@ -7,7 +7,6 @@ interface BlogDetailsProps {
     id: string;
     title: string;
     content: string;
-    summary?: string;
     author: { name?: string } | null;
     publishedAt: string;
     imageUrl?: string;
@@ -15,7 +14,7 @@ interface BlogDetailsProps {
 export const BlogContent = (props: BlogDetailsProps) => {
     const navigate = useNavigate();
     return (
-        <div className="blog-article bg-linear-to-b from-neutral-50 to-stone-100 w-full flex items-start justify-center px-4 md:py-8">
+        <div className="blog-article bg-linear-to-b from-neutral-50 to-stone-100 w-full flex items-start justify-center px-4 md:py-5 pt-4 pb-4">
                 <div className="w-full max-w-4xl rounded-4xl border border-white/70 bg-white/85 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur-sm md:p-10">
                     <div className="flex items-center gap-3 cursor-pointer text-base font-semibold text-gray-800" onClick={() => navigate('/blog')}>
                         <IoIosArrowRoundBack className="text-2xl"/>
@@ -28,11 +27,6 @@ export const BlogContent = (props: BlogDetailsProps) => {
                         <div className="medium-heading-font max-w-3xl text-4xl font-semibold tracking-tight text-gray-950 md:text-5xl">
                             {props.title}
                         </div>
-                        {props.summary ? (
-                            <p className="medium-heading-font mt-4 max-w-3xl text-lg leading-8 text-gray-600 md:text-xl">
-                                {props.summary}
-                            </p>
-                        ) : null}
                         <div className="flex items-center gap-4 text-sm mt-6 mb-4 text-gray-600">
                             <div className="flex items-center gap-1">
                                 <BiUser className="text-xl font-extrabold text-black" />
