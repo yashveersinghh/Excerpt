@@ -82,3 +82,67 @@ This project helped me learn and work with:
 ```bash
 git clone https://github.com/yashveersinghh/excerpt.git
 cd excerpt
+```
+
+# Install Dependencies
+
+## Frontend
+
+```bash
+cd Frontend
+npm install
+```
+
+## Backend
+
+```bash
+cd Backend
+npm install
+```
+
+---
+
+# Environment Variables
+
+## Frontend `.env`
+
+```env
+VITE_BACKEND_URL=
+VITE_CLOUDINARY_CLOUD_NAME=
+VITE_CLOUDINARY_UPLOAD_PRESET=
+```
+
+## Backend `.env`
+
+```env
+DATABASE_URL=
+JWT_SECRET=
+```
+
+---
+
+# Run Locally
+
+## Frontend
+
+```bash
+npm run dev
+```
+
+## Backend
+
+```bash
+npm run dev
+```
+
+---
+
+# Deployment
+
+## Frontend
+
+Deployed on Vercel.
+
+## Backend
+
+Deployed using Cloudflare Workers.
