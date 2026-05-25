@@ -14,7 +14,7 @@ _Excerpt_ is a full stack blog platform inspired by Medium, built to explore mod
 
 <!-- Add screenshot or gif here -->
 
-![Preview](./preview.png)
+![Preview](./Frontend/public/demo.png)
 
 ---
 
