@@ -1,10 +1,10 @@
-# _Excerpt_
+# Excerpt
 
-_Excerpt_ refers to a short extract or preview from a larger piece of writing.
+*Excerpt* refers to a short extract or preview from a larger piece of writing.
 
-_Excerpt_ is a full stack blog platform inspired by Medium, built to explore modern backend architecture and modern web technologies.
+*Excerpt* is a full-stack blogging platform inspired by the Medium aesthetic, built to explore modern edge computing architecture, scalable data modeling, and seamless AI integration.
 
-## Live Demo
+## Live
 
 🔗 https://excerpt-blog.vercel.app
 
@@ -12,75 +12,60 @@ _Excerpt_ is a full stack blog platform inspired by Medium, built to explore mod
 
 ## Preview
 
-<!-- Add screenshot or gif here -->
-
 ![Preview](./Frontend/public/demo.png)
 
 ---
 
 ## Features
 
-- JWT Authentication
-- Password hashing with bcrypt
-- Create and publish blogs
-- Blog cover image uploads
-- Cloudinary integration
-- Responsive mobile-first UI
-- Dynamic blog pages
-- Loading skeletons
-- Protected routes
-- Publish dates and excerpts
-- Clean modern design
+* **AI-Powered Summaries:** Uses the Google Gemini 2.5 Flash model on the edge to automatically generate a concise, two-sentence summary for published blog posts.
+* **Global Edge Backend:** Powered by Hono and running with ultra-low latency on Cloudflare Workers.
+* **Secure Authentication:** Context-aware JWT session verification combined with password hashing via bcrypt.
+* **Media Management:** Integrated with Cloudinary for handling and serving blog cover image uploads.
+* **Type-Safe Architecture:** End-to-end data validation utilizing Zod schemas alongside Prisma ORM for database access.
+* **Minimalist UI:** Responsive, mobile-first frontend featuring clean typography, loading skeletons, and a modern editorial layout.
 
 ---
 
 # Tech Stack
 
 ## Frontend
-
-- React
-- TypeScript
-- Tailwind CSS
-- Axios
+* React (Vite)
+* TypeScript
+* Tailwind CSS
+* Axios
 
 ## Backend
+* Hono
+* Cloudflare Workers
+* Prisma ORM
+* PostgreSQL
+* Zod
+* JWT / bcrypt
 
-- Hono
-- Cloudflare Workers
-- Prisma ORM
-- PostgreSQL
-- Zod
-- JWT
-- bcrypt
-
-## Services
-
-- Cloudinary
-- Vercel
+## AI & Services
+* Google AI Studio (Gemini API)
+* Cloudinary
+* Vercel
 
 ---
 
 # What I Learned
 
-This project helped me learn and work with:
+This project provided deep insight into building modern, serverless architectures:
 
-- Cloudflare Workers
-- Prisma ORM
-- Authentication using JWT
-- Password hashing using bcrypt
-- Schema validation using Zod
-- Responsive UI design
-- Image uploads using Cloudinary
-- Production deployment and debugging
+* **Serverless Edge Compute:** Adapting standard Node.js authentication and data flow patterns to work efficiently within the V8 isolate-based Cloudflare Workers runtime.
+* **Edge-Compatible AI Routing:** Integrating lightweight LLM prompts inside stateless backend routing environments, managing secrets safely via edge context environment bindings.
+* **Relational Data Modeling:** Designing structured blogging schemas and managing database connections efficiently using Prisma and a cloud PostgreSQL database.
+* **Defensive API Design:** Validating client payloads strictly on the network edge using Zod schemas before touching core database layers.
 
 ---
 
 # Local Setup
 
-## Clone the repository
-
+## Clone the Repository
 ```bash
-git clone https://github.com/yashveersinghh/excerpt.git
+git clone [https://github.com/yashveersinghh/excerpt.git](https://github.com/yashveersinghh/excerpt.git)
 cd excerpt
 ```
 
