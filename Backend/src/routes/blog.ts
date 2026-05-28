@@ -3,11 +3,13 @@ import { withAccelerate } from "@prisma/extension-accelerate";
 import { verify } from 'hono/jwt'
 import { PrismaClient } from "../generated/prisma/client";
 import { createBlogInput } from "@yashveersinghh/excerpt-common";
+import { GoogleGenAI } from "@google/genai";
 
 export const blogRouter = new Hono<{
     Bindings: {
         DATABASE_URL: string,
-        JWT_SECRET: string
+        JWT_SECRET: string,
+        GEMINI_API_KEY: string
     },
     Variables: {
         userId: string
@@ -200,3 +202,53 @@ blogRouter.get('/:id', async(c) => {
     return c.json({ error: 'Failed to fetch blog', details: String(err) }, 500);
   }
 })
+
+blogRouter.post("/summarize", async (c) => {
+  try {
+    const body = await c.req.json();
+    const { content } = body;
+
+    if (!content || typeof content !== 'string') {
+      return c.json({ error: 'content is required and must be a string' }, 400);
+    }
+
+    const apiKey = c.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      return c.json({ error: 'Gemini API key is not configured' }, 500);
+    }
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [
+                {
+                  text: `Provide a concise, 2-sentence summary of the following blog post. Do not include any introductory phrases like "Here is a summary". Just return the summary:\n\n${content}`,
+                },
+              ],
+            },
+          ],
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Gemini API responded with status ${response.status}: ${errorText}`);
+    }
+
+    const data: any = await response.json();
+    const summary = data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || '';
+
+    return c.json({ summary });
+  } catch (err) {
+    console.error('Error generating summary:', err);
+    return c.json({ error: 'Failed to generate summary', details: String(err) }, 500);
+  }
+});
